@@ -88,7 +88,7 @@ SEGMENTS = [SegmentName.A.value, SegmentName.B.value, SegmentName.C.value, Segme
 ```
 The naming of the segment follow this pattern:
 
-<img src="https://raw.githubusercontent.com/lucblender/FlipDigitClockPython/main/examples/7-segments.png" height="100">
+<img src="https://raw.githubusercontent.com/lucblender/FlipDigitClockPython/main/ressources/7-segments.png" height="100">
 
 And the numbering of the digit start with DIGIT_1 on the left to DIGIT_6 on the right with SEMI_COLLON_1 for the left dots and SEMI_COLLON_2 for the right ones.
 
