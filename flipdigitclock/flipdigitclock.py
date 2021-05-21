@@ -7,8 +7,8 @@ import sys
 number_segments = [0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07, 0x7F, 0x6F]
 
 class DigitNumber(Enum):
-    SEMI_COLLON_4 = 3
     SEMI_COLLON_2 = 7
+    SEMI_COLLON_1 = 3
     DIGIT_1 = 5
     DIGIT_2 = 1
     DIGIT_3 = 6
@@ -16,7 +16,7 @@ class DigitNumber(Enum):
     DIGIT_5 = 4
     DIGIT_6 = 0
 
-DIGITS = [DigitNumber.DIGIT_1.value, DigitNumber.DIGIT_2.value, DigitNumber.DIGIT_3.value, DigitNumber.DIGIT_4.value, DigitNumber.DIGIT_5.value, DigitNumber.DIGIT_6.value, DigitNumber.SEMI_COLLON_2.value, DigitNumber.SEMI_COLLON_4.value]
+DIGITS = [DigitNumber.DIGIT_1.value, DigitNumber.DIGIT_2.value, DigitNumber.DIGIT_3.value, DigitNumber.DIGIT_4.value, DigitNumber.DIGIT_5.value, DigitNumber.DIGIT_6.value, DigitNumber.SEMI_COLLON_1.value, DigitNumber.SEMI_COLLON_2.value]
 
 class SegmentName(Enum):
     A = 3
@@ -80,9 +80,13 @@ class FlipDigitClock:
         self.reset_all()
         
         signal.signal(signal.SIGINT, self.signal_handler)
+        signal.signal(signal.SIGTSTP, self.signal_handler)
     
     def signal_handler(self, sig, frame):
         self.reset_all()
+        GPIO.cleanup()
+        print("FlipDigitClock exited properly, GPIOs reset in safe state")
+        sys.exit(0)
     
     def reset_segment(self, digit, seg):
         digit_num = bin_to_GPIO_level(digit)
@@ -128,12 +132,28 @@ class FlipDigitClock:
                 self.set_segment(digit, SEGMENTS[i])
             i += 1
     
+    def clear_digit(self, digit):
+        for i in range(0,8):
+            self.reset_segment(digit, i)
+    
+    def clear_digits(self):
+        for i in range(0,6):
+            self.clear_digit(DIGITS[i])
+        self.reset_segment(DigitNumber.SEMI_COLLON_2.value, SegmentName.COLLON.value)
+        self.reset_segment(DigitNumber.SEMI_COLLON_1.value, SegmentName.COLLON.value)
+    
     def set_number(self, digit, number):
         self.set_segments(digit, number_segments[number])
     
-    def clear_digit(self, digit,):
-        for i in range(0,8):
-            self.reset_segment(digit, i)
+    def set_dots(self, dot_first, dot_second):
+        if dot_first == True:
+            self.set_segment(DigitNumber.SEMI_COLLON_1.value, SegmentName.COLLON.value)
+        else:
+            self.reset_segment(DigitNumber.SEMI_COLLON_1.value, SegmentName.COLLON.value)
+        if dot_second == True:
+            self.set_segment(DigitNumber.SEMI_COLLON_2.value, SegmentName.COLLON.value)
+        else:
+            self.reset_segment(DigitNumber.SEMI_COLLON_2.value, SegmentName.COLLON.value)
     
     def set_multiple_digit_number(self, num, dot_first = False, dot_second = False):
         sign = 1 if num < 0 else 0
@@ -147,14 +167,7 @@ class FlipDigitClock:
             pos_nums = pos_nums+[0]*(6-len(pos_nums))        
         for i in range(0,6):
             self.set_number(DIGITS[i],pos_nums[i])
-        if dot_first == True:
-            self.set_segment(DigitNumber.SEMI_COLLON_2.value, SegmentName.COLLON.value)
-        else:
-            self.reset_segment(DigitNumber.SEMI_COLLON_2.value, SegmentName.COLLON.value)
-        if dot_second == True:
-            self.set_segment(DigitNumber.SEMI_COLLON_4.value, SegmentName.COLLON.value)
-        else:
-            self.reset_segment(DigitNumber.SEMI_COLLON_4.value, SegmentName.COLLON.value)
+        self.set_dots(dot_first, dot_second)
     
     def reset_all(self):
         GPIO.output(self.__A_DIG,      GPIO.LOW)

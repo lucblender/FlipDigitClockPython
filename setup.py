@@ -22,7 +22,7 @@ setup(
     author='Lucas Bonvin',
     license='MIT',
     url='https://github.com/lucblender/FlipDigitClockPython',
-    install_requires=['pyserial'],
+    install_requires=install_requires,
     python_requires='>=3.6',
     license_file='LICENSE',
     classifiers=[

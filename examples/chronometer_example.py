@@ -5,6 +5,7 @@ clock = FlipDigitClock()
 
 start = datetime.now()
 
+i=0
 while(True):
     delta = datetime.now() - start
     chrono_time = int(str(delta).replace(":","").replace(".","")[:-4])    
@@ -13,3 +14,4 @@ while(True):
     else:
         clock.set_multiple_digit_number(chrono_time, True, True)
     sleep(0.01)
+    i+=1

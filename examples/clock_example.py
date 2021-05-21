@@ -3,6 +3,7 @@ from datetime import datetime
 
 clock = FlipDigitClock()
 
+i = 0
 while(True):
     now = datetime.now()
     current_time = int(now.strftime("%H%M%S"))
@@ -11,3 +12,4 @@ while(True):
     else:
         clock.set_multiple_digit_number(current_time, True, True)
     sleep(0.1)
+    i+=1
