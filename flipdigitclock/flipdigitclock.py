@@ -52,7 +52,7 @@ def bin_to_set_reset_segment(to_convert):
 
 class FlipDigitClock:
     
-    def __init__(self, A_DIG = 7, B_DIG = 5, C_DIG = 6, SET_DIG_EN = 12, RES_DIG_EN = 13, A_SEG = 19, B_SEG = 16, C_SEG = 26, SET_SEG_EN = 20, RES_SEG_EN = 21):
+    def __init__(self, A_DIG = 25, B_DIG = 5, C_DIG = 6, SET_DIG_EN = 12, RES_DIG_EN = 13, A_SEG = 19, B_SEG = 16, C_SEG = 26, SET_SEG_EN = 20, RES_SEG_EN = 21):
         self.__A_DIG = A_DIG
         self.__B_DIG = B_DIG
         self.__C_DIG = C_DIG
